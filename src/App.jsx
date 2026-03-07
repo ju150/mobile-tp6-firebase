@@ -1,26 +1,20 @@
 import { useFirebaseValues } from './hooks/useFirebaseValues'
-import {updateFirebaseValue} from './services/firebaseService.js'
+import {addFirebaseItem} from './services/firebaseService.js'
+import { objectToArray } from './utils/arrayUtils.js'
+import MessageList from './components/MessageList.jsx'
+import { useState } from 'react'
 
 function App() {
-  const [compteur, loading] = useFirebaseValues("compteur")
-
-  const [utilisateur, loadingBis] = useFirebaseValues("utilisateur", {})
-
-  return (
-    <>
-      <h1>Compteur</h1>
-      {loading ? <p>Chargement...</p> : <p>Valeur : {compteur}</p>}
-      <button onClick={() => updateFirebaseValue("compteur",compteur+1)}>+1</button>
-      {loadingBis ? <p>Chargement...</p> : <div>
-        <label>Nom : </label>
-        <input value={utilisateur.nom} onChange={(change) => updateFirebaseValue("utilisateur/nom",change.target.value)}/>
-        <label>Prénom : </label>
-        <input onChange={(change) => updateFirebaseValue("utilisateur/prenom",change.target.value)} value={utilisateur.prenom}/>
-        <label>Âge : </label>
-        <input type="number" onChange={(change) => updateFirebaseValue("utilisateur/age",change.target.value)} value={utilisateur.age}/>
-      </div>}
-    </>
-  )
+  const [messagesData, loadingMessages] = useFirebaseValues("messages", {})
+  const [texte, setTexte ] = useState("");
+  return <>
+    {loadingMessages ? <p>Chargement...</p> : <MessageList messages={objectToArray(messagesData)} />}
+    <input value={texte} onChange={((e)=>setTexte(e.target.value))}></input>
+    <button onClick={() => {
+      addFirebaseItem("messages", { content: texte, sentAt: new Date().toISOString() });
+      setTexte("")
+    }}>envoyer</button>
+  </>
 }
 
 export default App
