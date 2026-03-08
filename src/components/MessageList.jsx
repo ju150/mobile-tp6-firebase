@@ -1,13 +1,17 @@
-function MessageList({ messages, users, selectedUser }){
+function MessageList({ messages, users, currentUser }){
     const sorted = [...messages].sort((a,b) => a.sentAt > b.sentAt ? 1 :-1 )
 
     return (
         <div>
-            {sorted.map((msg) => (
-                <p key={msg._id} style={{ textAlign: msg.senderId === selectedUser ? 'right' : 'left' }}>
-                    {users?.[msg.senderId]?.Nom} : {msg.content}
-                </p>
-            ))}
+            {sorted.map((msg) => {
+                const isMe = msg.senderId === currentUser?.uid;
+                const name = isMe ? (currentUser.displayName || 'Moi') : (users?.[msg.senderId]?.Nom || 'Inconnu');
+                return (
+                    <p key={msg._id} style={{ textAlign: isMe ? 'right' : 'left' }}>
+                        {name} : {msg.content}
+                    </p>
+                );
+            })}
         </div>
 )
 }
