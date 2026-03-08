@@ -1,6 +1,6 @@
 import { onValue } from "firebase/database"; 
 import { useEffect, useRef, useState } from "react"; 
-import { getFirebaseRef } from "../services/firebaseService.js"; 
+import { getFirebaseRef } from "../services/firebaseService.js";
  
 export const useFirebaseValues = (path, defaultValue = undefined) => { 
     const [data, setData] = useState(defaultValue); 
